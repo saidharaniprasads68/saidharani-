@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Portal – Your College ERP</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
+</head>
+<body>
+
+  <!-- ─── Sidebar ────────────────────────────────────────────── -->
+  <nav id="sidebar" class="sidebar" aria-label="Main navigation">
+
+    <!-- Branding -->
+    <div class="sidebar-brand">
+      <div class="sidebar-logo" aria-hidden="true">YC</div>
+      <div class="sidebar-brand-text">
+        <strong>Your College</strong>
+        <span>Student ERP</span>
+      </div>
+    </div>
+
+    <!-- Navigation links -->
+    <div class="sidebar-nav" role="list">
+      <div class="nav-section-label">Main</div>
+
+      <div class="nav-item active" data-section="dashboard" data-title="Dashboard" role="listitem" tabindex="0" aria-current="page">
+        <span class="nav-icon" aria-hidden="true">🏠</span> Dashboard
+      </div>
+
+      <div class="nav-item" data-section="profile" data-title="My Profile" role="listitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">👤</span> Profile
+      </div>
+
+      <div class="nav-section-label">Academics</div>
+
+      <div class="nav-item" data-section="attendance" data-title="Attendance" role="listitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📋</span> Attendance
+      </div>
+
+      <div class="nav-item" data-section="marks" data-title="Marks &amp; Results" role="listitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📊</span> Marks / Results
+      </div>
+
+      <div class="nav-item" data-section="timetable" data-title="Timetable" role="listitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🗓️</span> Timetable
+      </div>
+
+      <div class="nav-section-label">Finance &amp; Info</div>
+
+      <div class="nav-item" data-section="fees" data-title="Fees" role="listitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">💳</span> Fees
+      </div>
+
+      <div class="nav-item" data-section="notices" data-title="Notices" role="listitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📢</span> Notices
+      </div>
+    </div>
+
+  </nav>
+
+  <!-- Mobile sidebar overlay -->
+  <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+  <!-- ─── Top Bar ─────────────────────────────────────────────── -->
+  <header class="topbar" role="banner">
+    <div class="topbar-left">
+      <!-- Hamburger for mobile -->
+      <button id="menuToggle" class="menu-toggle" aria-label="Toggle navigation menu" aria-controls="sidebar">
+        ☰
+      </button>
+      <h1 id="pageTitle" class="page-title">Dashboard</h1>
+    </div>
+
+    <div class="topbar-right">
+      <!-- Student info -->
+      <div class="topbar-avatar" id="topbarAvatar" aria-hidden="true">?</div>
+      <div>
+        <div class="topbar-name" id="topbarName">Loading…</div>
+        <div class="topbar-dept" id="topbarDept"></div>
+      </div>
+
+      <!-- Logout -->
+      <button id="logoutBtn" class="btn-logout" aria-label="Logout from ERP">
+        🚪 Logout
+      </button>
+    </div>
+  </header>
+
+  <!-- ─── Main Content ─────────────────────────────────────────── -->
+  <main class="main-content" role="main">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECTION 1 — DASHBOARD
+    ═══════════════════════════════════════════════════════════ -->
+    <section id="sec-dashboard" class="section-panel active">
+      <div class="section-header">
+        <h2>👋 Welcome back!</h2>
+        <p>Here's your academic snapshot for today.</p>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="stats-grid">
+
+        <div class="stat-card" style="--accent-color:var(--accent)">
+          <div class="stat-icon">🎓</div>
+          <div class="stat-value" id="dash-cgpa">—</div>
+          <div class="stat-label">Current CGPA</div>
+        </div>
+
+        <div class="stat-card" id="dash-attendance-card">
+          <div class="stat-icon">📋</div>
+          <div class="stat-value" id="dash-attendance">—</div>
+          <div class="stat-label">Overall Attendance</div>
+        </div>
+
+        <div class="stat-card" style="--accent-color:var(--primary)">
+          <div class="stat-icon">📚</div>
+          <div class="stat-value" id="dash-semester">—</div>
+          <div class="stat-label">Current Semester</div>
+        </div>
+
+        <div class="stat-card" style="--accent-color:var(--warning)">
+          <div class="stat-icon">💳</div>
+          <div class="stat-value" id="dash-pending-fee">—</div>
+          <div class="stat-label">Pending Fees</div>
+        </div>
+
+      </div>
+
+      <!-- Latest notices -->
+      <div class="card">
+        <div class="card-title">📢 Latest Notices</div>
+        <div class="notice-grid" id="dash-notices">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECTION 2 — PROFILE
+    ═══════════════════════════════════════════════════════════ -->
+    <section id="sec-profile" class="section-panel">
+      <div class="section-header">
+        <h2>👤 My Profile</h2>
+        <p>View your details. You can edit your phone number and email.</p>
+      </div>
+
+      <div class="card">
+        <!-- Avatar + name -->
+        <div class="profile-header">
+          <div class="profile-avatar-big" id="prof-avatar" aria-hidden="true">?</div>
+          <div class="profile-info">
+            <h2 id="prof-name">—</h2>
+            <p id="prof-dept">—</p>
+          </div>
+        </div>
+
+        <!-- Read-only fields -->
+        <div class="profile-fields">
+
+          <div class="profile-field">
+            <label>Roll Number</label>
+            <div class="field-value" id="prof-roll">—</div>
+          </div>
+
+          <div class="profile-field">
+            <label>Department</label>
+            <div class="field-value" id="prof-dept-val">—</div>
+          </div>
+
+          <div class="profile-field">
+            <label>Year of Study</label>
+            <div class="field-value" id="prof-year">—</div>
+          </div>
+
+          <div class="profile-field">
+            <label>Current Semester</label>
+            <div class="field-value" id="prof-semester">—</div>
+          </div>
+
+          <div class="profile-field">
+            <label>CGPA</label>
+            <div class="field-value" id="prof-cgpa">—</div>
+          </div>
+
+          <!-- Editable: Email -->
+          <div class="profile-field">
+            <label for="prof-email">Email Address <span style="color:var(--accent)">(editable)</span></label>
+            <input
+              type="email"
+              id="prof-email"
+              class="form-control"
+              placeholder="email@example.com"
+              aria-describedby="prof-email-error"
+            />
+            <p id="prof-email-error" class="error-msg" role="alert"></p>
+          </div>
+
+          <!-- Editable: Phone -->
+          <div class="profile-field" style="grid-column: 1 / -1">
+            <label for="prof-phone">Phone Number <span style="color:var(--accent)">(editable)</span></label>
+            <input
+              type="tel"
+              id="prof-phone"
+              class="form-control"
+              placeholder="10-digit mobile number"
+              maxlength="10"
+              aria-describedby="prof-phone-error"
+            />
+            <p id="prof-phone-error" class="error-msg" role="alert"></p>
+          </div>
+
+        </div>
+
+        <div style="margin-top:20px;">
+          <button id="profileSaveBtn" class="btn btn-success">💾 Save Changes</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECTION 3 — ATTENDANCE
+    ═══════════════════════════════════════════════════════════ -->
+    <section id="sec-attendance" class="section-panel">
+      <div class="section-header">
+        <h2>📋 Attendance</h2>
+        <p>Subject-wise attendance. Subjects below 75% are highlighted in red.</p>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+          <div class="card-title" style="margin-bottom:0;border:none;padding:0">Subject-wise Breakdown</div>
+          <div style="font-size:0.92rem;color:var(--text-mid);">
+            Overall: <strong id="att-overall" style="font-size:1.1rem;">—</strong>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table aria-label="Attendance table">
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Attended</th>
+                <th>Total</th>
+                <th>Percentage</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="att-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECTION 4 — MARKS / RESULTS
+    ═══════════════════════════════════════════════════════════ -->
+    <section id="sec-marks" class="section-panel">
+      <div class="section-header">
+        <h2>📊 Marks &amp; Results</h2>
+        <p>Select a semester to view subject-wise marks and your SGPA.</p>
+      </div>
+
+      <div class="card">
+        <!-- Semester selector + SGPA badge -->
+        <div class="sem-selector">
+          <label for="sem-select">Semester:</label>
+          <select id="sem-select" aria-label="Select semester"></select>
+          <div class="sgpa-badge" id="sgpa-display">SGPA: —</div>
+        </div>
+
+        <div class="table-wrapper">
+          <table aria-label="Marks table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Subject</th>
+                <th>Internal (30)</th>
+                <th>External (70)</th>
+                <th>Total (100)</th>
+                <th>Grade</th>
+                <th>Grade Points</th>
+              </tr>
+            </thead>
+            <tbody id="marks-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Grade legend -->
+        <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;font-size:0.8rem;">
+          <span class="grade-badge grade-O">O = Outstanding (10)</span>
+          <span class="grade-badge grade-Ap">A+ = Excellent (9)</span>
+          <span class="grade-badge grade-A">A = Very Good (8)</span>
+          <span class="grade-badge grade-Bp">B+ = Good (7)</span>
+          <span class="grade-badge grade-B">B = Above Avg (6)</span>
+          <span class="grade-badge grade-C">C = Average (5)</span>
+          <span class="grade-badge grade-F">F = Fail (0)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECTION 5 — TIMETABLE
+    ═══════════════════════════════════════════════════════════ -->
+    <section id="sec-timetable" class="section-panel">
+      <div class="section-header">
+        <h2>🗓️ Weekly Timetable</h2>
+        <p>Today's column is highlighted in blue (★).</p>
+      </div>
+
+      <div class="card">
+        <div class="table-wrapper">
+          <table class="timetable-table" aria-label="Weekly timetable">
+            <thead id="tt-head">
+              <!-- Populated by JS -->
+            </thead>
+            <tbody id="tt-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECTION 6 — FEES
+    ═══════════════════════════════════════════════════════════ -->
+    <section id="sec-fees" class="section-panel">
+      <div class="section-header">
+        <h2>💳 Fees</h2>
+        <p>View your fee summary and make payments.</p>
+      </div>
+
+      <!-- Summary cards -->
+      <div class="fee-summary">
+        <div class="fee-stat" style="border-top:4px solid var(--primary)">
+          <div class="fee-label">Total Fees</div>
+          <div class="fee-amount" id="fee-total" style="color:var(--primary)">—</div>
+        </div>
+        <div class="fee-stat" style="border-top:4px solid var(--success)">
+          <div class="fee-label">Paid</div>
+          <div class="fee-amount" id="fee-paid" style="color:var(--success)">—</div>
+        </div>
+        <div class="fee-stat" style="border-top:4px solid var(--danger)">
+          <div class="fee-label">Due</div>
+          <div class="fee-amount" id="fee-due">—</div>
+        </div>
+      </div>
+
+      <!-- Payment history -->
+      <div class="card">
+        <div class="card-title">💰 Payment History</div>
+        <div class="table-wrapper">
+          <table aria-label="Payment history">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="fees-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECTION 7 — NOTICES
+    ═══════════════════════════════════════════════════════════ -->
+    <section id="sec-notices" class="section-panel">
+      <div class="section-header">
+        <h2>📢 Notices &amp; Announcements</h2>
+        <p>Search or filter notices by category.</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="notices-filters">
+        <input
+          type="search"
+          id="notice-search"
+          placeholder="🔍  Search notices…"
+          aria-label="Search notices"
+        />
+        <select id="notice-cat" aria-label="Filter by category">
+          <option value="">All Categories</option>
+          <option value="Exam">Exam</option>
+          <option value="Event">Event</option>
+          <option value="Fee">Fee</option>
+          <option value="Placement">Placement</option>
+          <option value="General">General</option>
+        </select>
+      </div>
+
+      <!-- Notices list -->
+      <div id="notices-list">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── Toast notification ───────────────────────────────────── -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ─── Scripts ──────────────────────────────────────────────── -->
+  <!-- data.js must be first — it seeds localStorage and defines getData/setData -->
+  <script src="js/data.js"></script>
+  <!-- auth.js provides requireAuth, getCurrentStudent, logout, getSession -->
+  <script src="js/auth.js"></script>
+  <!-- student.js runs the dashboard (calls requireAuth itself) -->
+  <script src="js/student.js"></script>
+
+</body>
+</html>
