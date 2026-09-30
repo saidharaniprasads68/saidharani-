@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login – Your College ERP</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>" />
+</head>
+<body class="login-page">
+
+  <!-- ─── Login Card ─────────────────────────────────────────── -->
+  <div class="login-container" role="main">
+
+    <!-- College branding header -->
+    <div class="login-header">
+      <div class="college-logo" aria-hidden="true">YC</div>
+      <h1>Your College Name</h1>
+      <p>Student Information & ERP Portal</p>
+    </div>
+
+    <!-- Form area -->
+    <div class="login-body">
+      <p class="login-title">Sign in to your account</p>
+
+      <!-- Demo credentials hint (helpful for demo, remove in production) -->
+      <div class="demo-box" role="note" aria-label="Demo credentials">
+        <strong>🔑 Demo Credentials</strong>
+        <table>
+          <tr><td>STU001</td><td>pass123</td><td>Aarav Sharma (CS)</td></tr>
+          <tr><td>STU002</td><td>pass456</td><td>Priya Patel (EC)</td></tr>
+          <tr><td>STU003</td><td>pass789</td><td>Rohan Mehta (ME)</td></tr>
+        </table>
+      </div>
+
+      <!-- Login form -->
+      <form id="loginForm" novalidate>
+
+        <!-- Student ID -->
+        <div class="form-group">
+          <label for="studentId">Student ID</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">👤</span>
+            <input
+              type="text"
+              id="studentId"
+              class="form-control"
+              placeholder="e.g. STU001"
+              autocomplete="username"
+              aria-required="true"
+              aria-describedby="idError"
+            />
+          </div>
+          <p id="idError" class="error-msg" role="alert"></p>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon" aria-hidden="true">🔒</span>
+            <input
+              type="password"
+              id="password"
+              class="form-control"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              aria-required="true"
+              aria-describedby="pwError"
+            />
+            <!-- Show / Hide password toggle -->
+            <button
+              type="button"
+              class="toggle-pw"
+              id="togglePw"
+              aria-label="Toggle password visibility"
+              title="Show / Hide password"
+            >👁️</button>
+          </div>
+          <p id="pwError" class="error-msg" role="alert"></p>
+        </div>
+
+        <!-- Forgot password link (opens modal) -->
+        <a
+          class="forgot-link"
+          id="forgotLink"
+          role="button"
+          tabindex="0"
+          aria-haspopup="dialog"
+        >Forgot password?</a>
+
+        <!-- General login error (wrong credentials) -->
+        <p id="loginError" class="error-msg" role="alert" style="margin-bottom:12px;font-size:0.88rem;"></p>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-primary" id="loginBtn">
+          Sign In →
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ─── Forgot Password Modal ─────────────────────────────── -->
+  <div
+    class="modal-backdrop"
+    id="forgotModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="forgotTitle"
+  >
+    <div class="modal">
+      <h3 id="forgotTitle">🔑 Forgot Password?</h3>
+      <p>
+        This is a demo app — no real emails are sent. In a real ERP, you
+        would enter your registered email and receive a reset link.
+      </p>
+      <div class="form-group">
+        <label for="resetEmail">Registered Email Address</label>
+        <input
+          type="email"
+          id="resetEmail"
+          class="form-control"
+          placeholder="you@yourcollege.edu"
+          aria-label="Email for password reset"
+        />
+      </div>
+      <!-- Confirmation message shown after clicking "Send" -->
+      <p id="resetConfirm" style="color:var(--success);font-size:0.88rem;display:none;">
+        ✅ A password reset link has been sent (demo only – no real email sent).
+      </p>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="forgotClose">Cancel</button>
+        <button class="btn btn-primary" id="forgotSend" style="width:auto;padding:9px 20px;">
+          Send Reset Link
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts: data.js must be first so localStorage is seeded -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    /**
+     * index.html inline script — wires the login form.
+     * If the user is already logged in, skip straight to student.html.
+     */
+
+    // ── Redirect if already logged in ────────────────────────────────────
+    if (getSession()) {
+      window.location.href = "student.html";
+    }
+
+    // ── DOM references ────────────────────────────────────────────────────
+    const form        = document.getElementById("loginForm");
+    const idInput     = document.getElementById("studentId");
+    const pwInput     = document.getElementById("password");
+    const idError     = document.getElementById("idError");
+    const pwError     = document.getElementById("pwError");
+    const loginError  = document.getElementById("loginError");
+    const togglePwBtn = document.getElementById("togglePw");
+    const forgotLink  = document.getElementById("forgotLink");
+    const forgotModal = document.getElementById("forgotModal");
+    const forgotClose = document.getElementById("forgotClose");
+    const forgotSend  = document.getElementById("forgotSend");
+    const resetEmail  = document.getElementById("resetEmail");
+    const resetConfirm= document.getElementById("resetConfirm");
+
+    // ── Show/hide password toggle ────────────────────────────────────────
+    togglePwBtn.addEventListener("click", () => {
+      const isHidden = pwInput.type === "password";
+      pwInput.type   = isHidden ? "text" : "password";
+      togglePwBtn.textContent = isHidden ? "🙈" : "👁️";
+    });
+
+    // ── Clear errors on input ────────────────────────────────────────────
+    idInput.addEventListener("input", () => hideError(idError));
+    pwInput.addEventListener("input", () => hideError(pwError));
+
+    function showError(el, msg) {
+      el.textContent = msg;
+      el.classList.add("visible");
+    }
+
+    function hideError(el) {
+      el.textContent = "";
+      el.classList.remove("visible");
+    }
+
+    // ── Form submit ───────────────────────────────────────────────────────
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // Reset all errors
+      hideError(idError);
+      hideError(pwError);
+      hideError(loginError);
+
+      const studentId = idInput.value.trim();
+      const password  = pwInput.value;
+
+      // Field-level validation
+      let hasError = false;
+      if (!studentId) { showError(idError, "Student ID is required."); hasError = true; }
+      if (!password)  { showError(pwError, "Password is required.");   hasError = true; }
+      if (hasError) return;
+
+      // Attempt login via auth.js
+      const result = attemptLogin(studentId, password);
+
+      if (result.success) {
+        // Brief visual feedback before redirect
+        document.getElementById("loginBtn").textContent = "Signing in…";
+        setTimeout(() => { window.location.href = "student.html"; }, 400);
+      } else {
+        showError(loginError, result.error);
+        pwInput.value = "";
+        pwInput.focus();
+      }
+    });
+
+    // ── Forgot password modal ─────────────────────────────────────────────
+    function openModal() {
+      forgotModal.classList.add("open");
+      resetEmail.focus();
+      resetConfirm.style.display = "none";
+      resetEmail.value = "";
+    }
+
+    function closeModal() {
+      forgotModal.classList.remove("open");
+      forgotLink.focus();
+    }
+
+    forgotLink.addEventListener("click",  openModal);
+    forgotLink.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") openModal(); });
+    forgotClose.addEventListener("click", closeModal);
+
+    // Close modal on backdrop click
+    forgotModal.addEventListener("click", (e) => {
+      if (e.target === forgotModal) closeModal();
+    });
+
+    // "Send reset link" — demo only
+    forgotSend.addEventListener("click", () => {
+      if (!resetEmail.value.trim()) {
+        resetEmail.style.borderColor = "var(--danger)";
+        return;
+      }
+      resetEmail.style.borderColor = "";
+      resetConfirm.style.display = "block";
+      forgotSend.textContent = "Sent ✓";
+      forgotSend.disabled = true;
+      setTimeout(() => {
+        closeModal();
+        forgotSend.textContent = "Send Reset Link";
+        forgotSend.disabled = false;
+      }, 2000);
+    });
+
+    // Keyboard: close modal on Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && forgotModal.classList.contains("open")) closeModal();
+    });
+  </script>
+</body>
+</html>
